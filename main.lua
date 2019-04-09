@@ -4,7 +4,9 @@ player = {
     width = 32,
     height = 64,
     gravity = 700,
+    dx = 0,
     dy = 0,
+    terminalVelocity = 500,
     runSpeed = 600
 }
 
@@ -15,23 +17,25 @@ end
 function player:update(dt)
     self:move(dt)
     self:applyGravity(dt)
+    player.x = player.x + player.dx * dt
+    player.y = player.y + player.dy * dt
+    player.y = player.y % love.graphics.getHeight()
 end
 
 function player:move(dt)
-    local dx = 0
+    player.dx = 0
     if love.keyboard.isDown('a') or love.keyboard.isDown('left') then
-        dx = dx - 1
+        player.dx = player.dx - player.runSpeed
     end
     if love.keyboard.isDown('d') or love.keyboard.isDown('right') then
-        dx = dx + 1
+        player.dx = player.dx + player.runSpeed
     end
-    player.x = player.x + player.runSpeed * dx * dt
 end
 
 function player:applyGravity(dt)
-    player.dy = player.dy + player.gravity * dt
-    player.y = player.y + player.dy * dt
-    player.y = player.y % love.graphics.getHeight()
+    if math.abs(player.dy) < player.terminalVelocity then
+        player.dy = player.dy + player.gravity * dt
+    end
 end
 
 function player:draw()
