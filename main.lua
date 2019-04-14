@@ -6,11 +6,13 @@ player = {
     y = 0,
     width = 32,
     height = 64,
-    gravity = 700,
+    gravity = 2000,
     dx = 0,
     dy = 0,
     terminalVelocity = 1000,
-    runSpeed = 600
+    runSpeed = 600,
+    grounded = false,
+    jumpSpeed = -800
 }
 
 local floor = {
@@ -51,10 +53,14 @@ function player:collide(dt)
     local futureX, futureY = player.x + player.dx * dt, player.y + player.dy * dt
     local nextX, nextY, cols, len = world:move(player, futureX, futureY)
 
+    player.grounded = false
     for i = 1, len do
         local col = cols[i]
         if math.abs(col.normal.y) == 1 then
             player.dy = 0
+        end
+        if col.normal.y == -1 then
+            player.grounded = true
         end
     end
 
@@ -88,5 +94,12 @@ end
 function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
+    end
+
+    if key == 'space' then
+        if player.grounded then
+            player.dy = player.jumpSpeed
+            player.grounded = false
+        end
     end
 end
