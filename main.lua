@@ -49,6 +49,13 @@ function player:applyGravity(dt)
     end
 end
 
+function player:jump()
+    if self.grounded then
+        self.dy = self.jumpSpeed
+        self.grounded = false
+    end
+end
+
 function player:collide(dt)
     local futureX, futureY = self.x + self.dx * dt, self.y + self.dy * dt
     local nextX, nextY, cols, len = world:move(self, futureX, futureY)
@@ -97,9 +104,6 @@ function love.keypressed(key)
     end
 
     if key == 'space' then
-        if player.grounded then
-            player.dy = player.jumpSpeed
-            player.grounded = false
-        end
+        player:jump()
     end
 end
