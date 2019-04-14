@@ -1,5 +1,8 @@
 local Bump = require('src.lib.bump')
+local level1 = require('src.levels.1')
+
 world = Bump.newWorld()
+
 
 player = {
     x = 0,
@@ -15,12 +18,17 @@ player = {
     jumpSpeed = -800
 }
 
-local floor = {
-    x = love.graphics.getWidth() / 2 - 150,
-    y = love.graphics.getHeight() - 40,
-    width = 300,
-    height = 40,
-}
+function loadTiledLevel(level)
+    for k, v in pairs(level.layers[1].objects) do
+        world:add(v, v.x, v.y, v.width, v.height)
+    end
+end
+
+function drawTiledLevel(level)
+    for k, v in pairs(level.layers[1].objects) do
+        love.graphics.rectangle('fill', v.x, v.y, v.width, v.height)
+    end
+end
 
 function player:setPosition(x, y)
     self.x, self.y = x, y
@@ -30,7 +38,6 @@ function player:update(dt)
     self:move(dt)
     self:applyGravity(dt)
     self:collide(dt)
-    self.y = self.y % love.graphics.getHeight()
 end
 
 function player:move(dt)
@@ -85,7 +92,7 @@ end
 function love.load()
     player:setPosition(love.graphics.getWidth() / 2 - player.width / 2, 20)
     world:add(player, player.x, player.y, player.width, player.height)
-    world:add(floor, floor.x, floor.y, floor.width, floor.height)
+    loadTiledLevel(level1)
 end
 
 function love.update(dt)
@@ -95,7 +102,7 @@ end
 function love.draw()
     player:draw()
     love.graphics.setColor(0.25, 0.25, 0.25)
-    love.graphics.rectangle('fill', floor.x, floor.y, floor.width, floor.height)
+    drawTiledLevel(level1)
 end
 
 function love.keypressed(key)
