@@ -9,7 +9,7 @@ player = {
     gravity = 700,
     dx = 0,
     dy = 0,
-    terminalVelocity = 500,
+    terminalVelocity = 1000,
     runSpeed = 600
 }
 
@@ -50,6 +50,13 @@ end
 function player:collide(dt)
     local futureX, futureY = player.x + player.dx * dt, player.y + player.dy * dt
     local nextX, nextY, cols, len = world:move(player, futureX, futureY)
+
+    for i = 1, len do
+        local col = cols[i]
+        if math.abs(col.normal.y) == 1 then
+            player.dy = 0
+        end
+    end
 
     player.x, player.y = nextX, nextY
 end
