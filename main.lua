@@ -30,48 +30,48 @@ function player:update(dt)
     self:move(dt)
     self:applyGravity(dt)
     self:collide(dt)
-    player.y = player.y % love.graphics.getHeight()
+    self.y = self.y % love.graphics.getHeight()
 end
 
 function player:move(dt)
     player.dx = 0
     if love.keyboard.isDown('a') or love.keyboard.isDown('left') then
-        player.dx = player.dx - player.runSpeed
+        self.dx = self.dx - self.runSpeed
     end
     if love.keyboard.isDown('d') or love.keyboard.isDown('right') then
-        player.dx = player.dx + player.runSpeed
+        self.dx = self.dx + self.runSpeed
     end
 end
 
 function player:applyGravity(dt)
-    if math.abs(player.dy) < player.terminalVelocity then
-        player.dy = player.dy + player.gravity * dt
+    if math.abs(self.dy) < self.terminalVelocity then
+        self.dy = self.dy + self.gravity * dt
     end
 end
 
 function player:collide(dt)
-    local futureX, futureY = player.x + player.dx * dt, player.y + player.dy * dt
-    local nextX, nextY, cols, len = world:move(player, futureX, futureY)
+    local futureX, futureY = self.x + self.dx * dt, self.y + self.dy * dt
+    local nextX, nextY, cols, len = world:move(self, futureX, futureY)
 
-    player.grounded = false
+    self.grounded = false
     for i = 1, len do
         local col = cols[i]
         if math.abs(col.normal.y) == 1 then
-            player.dy = 0
+            self.dy = 0
         end
         if col.normal.y == -1 then
-            player.grounded = true
+            self.grounded = true
         end
     end
 
-    player.x, player.y = nextX, nextY
+    self.x, self.y = nextX, nextY
 end
 
 function player:draw()
     love.graphics.setColor(0, 0.75, 0.75)
-    love.graphics.rectangle('fill', player.x, player.y, player.width, player.height)
+    love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
     love.graphics.setColor(0, 0, 0)
-    love.graphics.rectangle('line', player.x, player.y, player.width, player.height)
+    love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
     love.graphics.setColor(1, 1, 1)
 end
 
